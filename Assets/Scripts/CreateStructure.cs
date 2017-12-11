@@ -33,12 +33,16 @@ public class CreateStructure : MonoBehaviour
     SpriteRenderer vRenderer;
 
     SpriteRenderer cornerRenderer;
+    Rigidbody2D ridgid;
     void Start()
     {
         _structures = new List<RectangleBound>();
         hWall = new GameObject();
         vWall = new GameObject();
         corner = new GameObject();
+
+
+
 
         wRenderer = hWall.AddComponent<SpriteRenderer>();
         wRenderer.sprite = HorizontalWall;
@@ -47,6 +51,10 @@ public class CreateStructure : MonoBehaviour
         vRenderer.sprite = VerticalWall;
 
         cornerRenderer = corner.AddComponent<SpriteRenderer>();
+
+        var hCollider = hWall.AddComponent<BoxCollider2D>();
+        var vCollider = vWall.AddComponent<BoxCollider2D>();
+        
     }
 
     // Update is called once per frame
@@ -128,7 +136,7 @@ public class CreateStructure : MonoBehaviour
     public bool IsStructureBlocked(RectangleBound rect, Location loc)
     {
         var isBlocked = false;
-        foreach(var struc in _structures)
+        foreach (var struc in _structures)
         {
             var strucL = struc.X;
             var strucR = struc.X + struc.Width;
@@ -142,7 +150,7 @@ public class CreateStructure : MonoBehaviour
                 continue;
 
             // If one rectangle is above other
-            if (struc.Y + struc.Height < loc.Y || loc.Y +rect.Height < struc.Y)
+            if (struc.Y + struc.Height < loc.Y || loc.Y + rect.Height < struc.Y)
                 continue;
 
             return true;
@@ -174,7 +182,7 @@ public class CreateStructure : MonoBehaviour
         //child.transform.position = new Vector3(x, y, Z);
 
         //horizontalwalls
-        for(int i = 1; i < rect.Width-1; ++i)
+        for (int i = 1; i < rect.Width - 1; ++i)
         {
             child = Instantiate(hWall);
             x = (rect.X * SpriteSize) / transform.localScale.x;
@@ -187,7 +195,7 @@ public class CreateStructure : MonoBehaviour
             x = (rect.X * SpriteSize) / transform.localScale.x;
             y = (rect.Y * SpriteSize) / transform.localScale.y;
             add = i * SpriteSize;
-            child.transform.position = new Vector3(x + add, y + (rect.Height-1) * SpriteSize, Z);
+            child.transform.position = new Vector3(x + add, y + (rect.Height - 1) * SpriteSize, Z);
             _walls.Add(child.transform.position);
         }
         //verticalwalls
@@ -229,13 +237,13 @@ public class CreateStructure : MonoBehaviour
             x = (rect.X * SpriteSize) / transform.localScale.x;
             y = (rect.Y * SpriteSize) / transform.localScale.y;
             add = i * SpriteSize;
-            child.transform.position = new Vector3(x + (rect.Width-1) * SpriteSize, y + add, Z);
+            child.transform.position = new Vector3(x + (rect.Width - 1) * SpriteSize, y + add, Z);
             _walls.Add(child.transform.position);
         }
         //child.transform.parent = transform;
 
-            //Vrenderer.enabled = false;
-            //wRenderer.enabled = false;
+        //Vrenderer.enabled = false;
+        //wRenderer.enabled = false;
     }
 
 }

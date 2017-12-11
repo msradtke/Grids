@@ -14,7 +14,7 @@ public class MovePlayer : MonoBehaviour
     public float SpriteSize;
     void Start()
     {
-        Camera.transform.position = Player.transform.position;
+        Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, Camera.transform.position.z);
     }
 
     // Update is called once per frame
@@ -25,6 +25,8 @@ public class MovePlayer : MonoBehaviour
     {
         KeyMovement();
         Player.transform.position = Vector3.Lerp(Player.transform.position, desiredLocation, Speed * Time.deltaTime);
+
+        Camera.transform.position = new Vector3(Player.transform.position.x,Player.transform.position.y,Camera.transform.position.z);
     }
     void KeyMovement()
     {
@@ -32,33 +34,35 @@ public class MovePlayer : MonoBehaviour
 
         if (Time.time >= _timestamp)
         {
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.W) || Input.GetKeyDown(KeyCode.W))
             {
-                var p = Player.transform.position;
+                var p = desiredLocation;
                 var newLoc = new Vector3(p.x, p.y + Distance, p.z);
                 if (!CollidesWithWall(newLoc))
                     desiredLocation.y += Distance;
-                _timestamp = Time.time + timeBetweenMoves;
             }
-
-            if (Input.GetKey(KeyCode.A))
+            else if (Input.GetKey(KeyCode.A))
             {
-                var p = Player.transform.position;
-                Player.transform.position = new Vector3(p.x - Distance, p.y, p.z);
+                var p = desiredLocation;
+                var newLoc = new Vector3(p.x - Distance, p.y, p.z);
+                if (!CollidesWithWall(newLoc))
+                    desiredLocation.x -= Distance;
             }
-            if (Input.GetKey(KeyCode.S))
+            else if (Input.GetKey(KeyCode.S))
             {
-                var p = Player.transform.position;
-                Player.transform.position = new Vector3(p.x, p.y - Distance, p.z);
+                var p = desiredLocation;
+                var newLoc = new Vector3(p.x, p.y - Distance, p.z);
+                if (!CollidesWithWall(newLoc))
+                    desiredLocation.y -= Distance;
             }
-            if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D))
             {
-                var p = Player.transform.position;
+                var p = desiredLocation;
                 var newLoc = new Vector3(p.x + Distance, p.y, p.z);
                 if (!CollidesWithWall(newLoc))
                     desiredLocation.x += Distance;
-                _timestamp = Time.time + timeBetweenMoves;
             }
+            _timestamp = Time.time + timeBetweenMoves;
         }
         if (false)
         {
@@ -87,11 +91,12 @@ public class MovePlayer : MonoBehaviour
             }
 
         }
-        Camera.transform.position = Player.transform.position;
     }
 
     bool CollidesWithWall(Vector3 newLocation)
     {
+        return false;
+
         foreach(var wall in CreateStructures._walls)
         {
             if (Helpers.Collides( wall, newLocation, SpriteSize, SpriteSize))
