@@ -24,6 +24,7 @@ public class CreateStructure : MonoBehaviour
     public Sprite TRCornerWall;
     public float SpriteSize;
     public int Z;
+    public GameObject TriggerScript;
 
     GameObject hWall;
     GameObject vWall;
@@ -34,6 +35,9 @@ public class CreateStructure : MonoBehaviour
 
     SpriteRenderer cornerRenderer;
     Rigidbody2D ridgid;
+
+
+
     void Start()
     {
         _structures = new List<RectangleBound>();
@@ -54,13 +58,22 @@ public class CreateStructure : MonoBehaviour
 
         var hCollider = hWall.AddComponent<BoxCollider2D>();
         var vCollider = vWall.AddComponent<BoxCollider2D>();
+
+        hWall.AddComponent<PlayerTriggers>();
+        vWall.AddComponent<PlayerTriggers>();
+
+        hCollider.isTrigger = false;
+        vCollider.isTrigger = false;
         
     }
 
     // Update is called once per frame
     void Update()
     {
+
     }
+
+
 
     public void CreateAStructure()
     {

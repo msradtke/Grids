@@ -9,11 +9,18 @@ public class MovePlayer : MonoBehaviour
     public GameObject Player;
     public Camera Camera;
     public float Distance;
-    public float Speed = 100.0f; 
+    public float Speed = 100.0f;
     public float timeBetweenMoves = .3333f;
     public float SpriteSize;
+
+    public bool Collided = false;
+
+    Transform tr;
+    Vector3 pos;
     void Start()
     {
+        pos = transform.position;
+        tr = transform;
         Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, Camera.transform.position.z);
     }
 
@@ -21,12 +28,36 @@ public class MovePlayer : MonoBehaviour
     float _timeSinceUpdated = 0;
     float _timestamp;
     Vector3 desiredLocation;
+    Vector3 lastGoodPosition;
+
+    Stack<Vector3> previousLocations = new Stack<Vector3>();
     void Update()
     {
-        KeyMovement();
-        Player.transform.position = Vector3.Lerp(Player.transform.position, desiredLocation, Speed * Time.deltaTime);
+        NewKeyMovement();
+        //Player.transform.position = Vector3.Lerp(Player.transform.position, desiredLocation, Speed * Time.deltaTime);
+        
+        Camera.transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, Camera.transform.position.z);
+    }
+    void NewKeyMovement()
+    {
 
-        Camera.transform.position = new Vector3(Player.transform.position.x,Player.transform.position.y,Camera.transform.position.z);
+        if (Input.GetKeyDown(KeyCode.D) && tr.position == pos)
+        {
+            pos += Vector3.right;
+        }
+        else if (Input.GetKeyDown(KeyCode.A) && tr.position == pos)
+        {
+            pos += Vector3.left;
+        }
+        else if (Input.GetKeyDown(KeyCode.W) && tr.position == pos)
+        {
+            pos += Vector3.up;
+        }
+        else if (Input.GetKeyDown(KeyCode.S) && tr.position == pos)
+        {
+            pos += Vector3.down;
+        }
+        transform.position = Vector3.MoveTowards(transform.position, pos, Time.deltaTime * Speed);
     }
     void KeyMovement()
     {
@@ -97,9 +128,9 @@ public class MovePlayer : MonoBehaviour
     {
         return false;
 
-        foreach(var wall in CreateStructures._walls)
+        foreach (var wall in CreateStructures._walls)
         {
-            if (Helpers.Collides( wall, newLocation, SpriteSize, SpriteSize))
+            if (Helpers.Collides(wall, newLocation, SpriteSize, SpriteSize))
                 return true;
         }
 
